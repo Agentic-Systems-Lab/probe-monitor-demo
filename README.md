@@ -9,8 +9,6 @@ This is a small demo from the *Evals and Safety* lecture (Agentic Systems Lab, E
 
 You can also turn on **"Block when the probe fires"** to stop the answer the moment the probe raises the alarm.
 
-![QR code to this repository](assets/qr.png)
-
 ## Run it on your laptop
 
 You need [uv](https://docs.astral.sh/uv/) (a fast Python package manager). Then:
