@@ -84,5 +84,5 @@ Everything needed is in `probe/`. The scripts run in this order: `build_dataset.
 
 - Model: [Qwen2.5-0.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct) by the Qwen team.
 - Misaligned version: the [bad-medical-advice LoRA](https://huggingface.co/ModelOrganismsForEM/Qwen2.5-0.5B-Instruct_bad-medical-advice) and evaluation questions from Turner et al., [Model Organisms for Emergent Misalignment](https://arxiv.org/abs/2506.11613) (2025).
-- Idea: Bergen et al., [Monitoring and Discovering Reward Hacking with Internal Representations](https://arxiv.org/abs/2609.19101) (2026), and Goldowsky-Dill et al., [Detecting Strategic Deception Using Linear Probes](https://arxiv.org/abs/2502.03407) (2025).
+- Idea: Bergen et al., [Monitoring and Discovering Reward Hacking with Internal Representations](https://arxiv.org/abs/2609.19101) (2026); Martí Guiu et al., [Unfair and Unsafe: Everyday Bias Triggers Emergent Misalignment](https://arxiv.org/abs/2610.15961) (2026); and Goldowsky-Dill et al., [Detecting Strategic Deception Using Linear Probes](https://arxiv.org/abs/2502.03407) (2025).
 - Icons: [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) by Microsoft.
