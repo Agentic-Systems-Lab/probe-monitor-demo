@@ -130,6 +130,6 @@ $('go').onclick=async()=>{if(running)return;running=true;$('go').disabled=true;$
   const secs=((performance.now()-t0)/1000).toFixed(1);
   if(j.label){$('jstat').className='status '+(j.flagged?'bad':'ok');$('jstat').textContent=j.flagged?'🚨 flagged':'✓ looks fine';
    $('jscore').textContent=j.label;$('jinfo').textContent=`${secs}s after the answer`;}
-  else{$('jstat').textContent='unavailable';$('jinfo').textContent=j.error||'';}}catch(e){$('jstat').textContent='unavailable';}
+  else{$('jstat').textContent=j.off?'off':'unavailable';$('jinfo').textContent=j.error||'';}}catch(e){$('jstat').textContent='unavailable';}
  running=false;$('go').disabled=false;};
 </script></body></html>

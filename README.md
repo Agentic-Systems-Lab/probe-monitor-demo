@@ -24,12 +24,24 @@ uv sync
 
 Open http://localhost:8000. The first start downloads the model (about 1 GB), so give it a minute.
 
-**About the judge (monitor 2):**
+**About the judge (monitor 2):** the probe works out of the box, but the judge needs one of these:
 
-- If you have a Gemini API key, copy `.env.example` to `.env` and paste it there. The demo then uses `gemini-3.8-flash`.
-- Without a key, the judge runs locally with `Qwen2.5-7B-Instruct`. That needs about 16 GB of memory.
-- On a smaller laptop, use a smaller judge (it is less accurate): `LOCAL_JUDGE_MODEL=Qwen/Qwen2.5-3B-Instruct ./run.sh`
-- Or switch the judge off: `JUDGE=off ./run.sh`. The probe still works.
+- **A Gemini API key** (fastest): copy `.env.example` to `.env` and paste your key there. The demo then uses `gemini-3.8-flash`.
+- **A local judge**: start with `JUDGE=local ./run.sh`. This runs `Qwen2.5-7B-Instruct` on your laptop and needs about 16 GB of memory.
+- **A smaller local judge** (less accurate): `JUDGE=local LOCAL_JUDGE_MODEL=Qwen/Qwen2.5-3B-Instruct ./run.sh`
+
+Without a key or `JUDGE=local`, the judge stays off and the page tells you so.
+
+### What gets downloaded
+
+The models download automatically from Hugging Face the first time you need them. They are cached in `~/.cache/huggingface`, so later starts are fast. No Hugging Face account is needed.
+
+| Model | Size | When |
+|---|---|---|
+| [Qwen2.5-0.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct) | 1 GB | always |
+| [bad-medical-advice LoRA](https://huggingface.co/ModelOrganismsForEM/Qwen2.5-0.5B-Instruct_bad-medical-advice) | 0.1 GB | always |
+| [Qwen2.5-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct) | 15 GB | only with `JUDGE=local` |
+| [Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct) | 6 GB | only if you choose it as the local judge |
 
 ## Things to try
 

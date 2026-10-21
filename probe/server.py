@@ -91,7 +91,9 @@ def generate(q: str, model_name: str = "safe", block: int = 0):
 import re
 from judge_prompt import JUDGE_Q
 LOCAL_JUDGE = os.environ.get("LOCAL_JUDGE_MODEL", "Qwen/Qwen2.5-7B-Instruct")
-JUDGE = os.environ.get("JUDGE") or ("gemini" if gemini_key() else "local")
+# Without an API key the judge is off by default, so a first run only downloads the 1 GB demo model.
+# JUDGE=local runs a local judge instead (Qwen2.5-7B by default, a 15 GB download).
+JUDGE = os.environ.get("JUDGE") or ("gemini" if gemini_key() else "off")
 _judge, judge_lock = {}, threading.Lock()
 
 
@@ -143,7 +145,7 @@ def judge(r: JudgeReq):
             out = jm.generate(ids, max_new_tokens=4, do_sample=False)
             txt = jt.decode(out[0, ids.shape[1]:], skip_special_tokens=True)
     else:
-        return {"error": "no judge configured"}
+        return {"off": True, "error": "off: add a Gemini key to .env, or start with JUDGE=local ./run.sh"}
     m = re.search(r"\d+", txt)
     if not m:
         return {"error": f"judge said: {txt[:80]}"}
