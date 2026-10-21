@@ -40,8 +40,34 @@ canvas{width:100%;height:auto;display:block}
 .big{font-size:28px;font-weight:bold}
 footer{margin-top:26px;padding-top:16px;border-top:1px solid #E3E6EB;display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 footer img{height:30px}footer .src{flex:1 1 520px;font-size:12px;color:#777;line-height:1.6}footer a{color:#555}
+
+.tabs{display:flex;gap:4px;border-bottom:2px solid #E3E6EB;margin:0 0 26px}
+.tabs button{border:0;background:none;padding:10px 18px;font:15px Arial;color:#777;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button.on{color:var(--ink);font-weight:bold;border-bottom-color:var(--blue)}
+.how h2{display:flex;align-items:center;gap:12px;font:bold 20px Arial;margin:6px 0 14px}.how h2 img{width:38px;height:38px}
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-bottom:18px}
+.step{flex:1 1 170px;background:#E4E7EB;border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.4}
+.step b{display:flex;align-items:center;gap:8px;color:var(--ink);margin-bottom:6px}
+.arr{display:flex;align-items:center;padding:0 8px;color:#444;font-size:22px}
+.pair{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pair div{flex:1 1 300px;border-radius:10px;padding:10px 14px;font-size:14px;line-height:1.45}
+.pair .ok{background:#E7F3EC}.pair .bad{background:#FAE7E3}
+.pair h4{margin:0 0 4px;font:bold 13px Arial}
+.note{font-size:13px;color:#666;margin:6px 0 0}
+pre.prompt{background:#E4E7EB;border-radius:10px;padding:12px 14px;font:12.5px/1.5 "IBM Plex Mono",ui-monospace,monospace;white-space:pre-wrap;margin:0 0 14px}
+table.t{border-collapse:collapse;font-size:14px;margin:6px 0 4px}table.t td,table.t th{padding:7px 14px;border-bottom:1px solid #E3E6EB;text-align:left}table.t th{color:#555}
+.hh{margin:18px 0 8px;font:bold 15px Arial}
+.mathwrap{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}.cart{flex:0 0 470px}
+.fbox{display:flex;gap:10px;margin-top:6px}.fbox div{flex:1;background:#E4E7EB;border-radius:10px;padding:8px 10px;text-align:center;font-size:13px}.fbox b{display:block;margin-bottom:4px}.fbox .f{background:none;font-size:17px}
+.math{flex:1 1 420px}.mrow{display:flex;gap:12px;margin:0 0 10px;font-size:14px;line-height:1.5}
+.mn{flex:0 0 24px;height:24px;border-radius:999px;background:var(--blue);color:#fff;font:bold 13px Arial;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.f{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:16px;background:#F4F3F0;border-radius:4px;padding:0 4px;white-space:nowrap}
+.howgrid{display:grid;grid-template-columns:1fr;gap:34px}
+.panel{background:#F7F8FA;border:1px solid #E3E6EB;border-radius:16px;padding:22px 26px}
 </style></head><body><main>
 <h1>Can we see it <b>go wrong</b> from the inside?</h1>
+<div class="tabs"><button id="tDemo" class="on">Demo</button><button id="tHow">How it works</button></div>
+<section id="pDemo">
 <div class="intro">
  <div class="fact"><img src="/static/icons/robot.png" alt=""><div><b>Qwen2.5-0.5B</b><br>one switch turns on a fine-tune that gives bad medical advice</div></div>
  <div class="fact"><div>We test <b>two monitors</b> for <b style="color:var(--red)"><u>harmful advice</u></b>
@@ -70,6 +96,64 @@ footer img{height:30px}footer .src{flex:1 1 520px;font-size:12px;color:#777;line
    <div class="big" id="jscore" style="margin-top:8px"></div></div>
  </div>
 </div>
+</section>
+<section id="pHow" class="how" style="display:none">
+ <div class="howgrid">
+  <div class="panel">
+   <h2><img src="/static/icons/microscope.png" alt="">How the probe is built</h2>
+   <h3 class="hh">The method</h3>
+   <div class="mathwrap"><div class="cart"><svg viewBox="0 0 440 290" width="100%" style="max-width:440px" font-family="Arial">
+ <defs><radialGradient id="gS"><stop offset="0" stop-color="#7A8AA0" stop-opacity=".35"/><stop offset="1" stop-color="#7A8AA0" stop-opacity="0"/></radialGradient>
+ <radialGradient id="gH"><stop offset="0" stop-color="#C0504D" stop-opacity=".3"/><stop offset="1" stop-color="#C0504D" stop-opacity="0"/></radialGradient>
+ <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,2 L10,5 L0,8 z" fill="#222"/></marker></defs>
+ <polygon points="25,222 318,262 425,170 140,142" fill="#EEF1F6"/>
+ <g stroke="#D3D9E3" stroke-width="1"><line x1="25" y1="222" x2="140" y2="142"/><line x1="62" y1="227" x2="176" y2="146"/><line x1="98" y1="232" x2="211" y2="149"/><line x1="135" y1="237" x2="247" y2="152"/><line x1="172" y1="242" x2="282" y2="156"/><line x1="208" y1="247" x2="318" y2="160"/><line x1="245" y1="252" x2="354" y2="163"/><line x1="281" y1="257" x2="389" y2="166"/><line x1="318" y1="262" x2="425" y2="170"/><line x1="25" y1="222" x2="318" y2="262"/><line x1="44" y1="209" x2="336" y2="247"/><line x1="63" y1="195" x2="354" y2="231"/><line x1="82" y1="182" x2="372" y2="216"/><line x1="102" y1="169" x2="389" y2="201"/><line x1="121" y1="155" x2="407" y2="185"/><line x1="140" y1="142" x2="425" y2="170"/></g>
+ <ellipse cx="128" cy="196" rx="34" ry="9" fill="#7A8AA0" opacity=".25"/>
+ <ellipse cx="328" cy="208" rx="34" ry="9" fill="#C0504D" opacity=".22"/>
+ <line x1="120" y1="112" x2="128" y2="196" stroke="#8A97AA" stroke-dasharray="3 4"/>
+ <line x1="318" y1="94" x2="328" y2="208" stroke="#C0504D" stroke-dasharray="3 4" opacity=".7"/>
+ <circle cx="120" cy="100" r="34" fill="url(#gS)"/><circle cx="318" cy="82" r="34" fill="url(#gH)"/>
+ <circle cx="120" cy="109" r="5" fill="#5F6E82" opacity="0.76"/><circle cx="110" cy="90" r="6" fill="#5F6E82" opacity="0.83"/><circle cx="102" cy="83" r="3" fill="#5F6E82" opacity="0.50"/><circle cx="129" cy="93" r="4" fill="#5F6E82" opacity="0.50"/><circle cx="130" cy="101" r="3" fill="#5F6E82" opacity="0.58"/><circle cx="133" cy="115" r="4" fill="#5F6E82" opacity="0.51"/><circle cx="113" cy="102" r="5" fill="#5F6E82" opacity="0.89"/><circle cx="122" cy="107" r="2.5" fill="#5F6E82" opacity="0.89"/><circle cx="111" cy="125" r="3" fill="#5F6E82" opacity="0.69"/><circle cx="114" cy="96" r="6" fill="#5F6E82" opacity="0.89"/><circle cx="149" cy="96" r="3" fill="#5F6E82" opacity="0.58"/><circle cx="92" cy="112" r="3.5" fill="#5F6E82" opacity="0.57"/><circle cx="114" cy="113" r="3.5" fill="#5F6E82" opacity="0.45"/><circle cx="119" cy="96" r="6" fill="#5F6E82" opacity="0.61"/><circle cx="108" cy="101" r="3.5" fill="#5F6E82" opacity="0.67"/><circle cx="125" cy="107" r="6" fill="#5F6E82" opacity="0.87"/><circle cx="111" cy="108" r="6" fill="#5F6E82" opacity="0.70"/><circle cx="108" cy="110" r="4" fill="#5F6E82" opacity="0.45"/><circle cx="115" cy="87" r="2.5" fill="#5F6E82" opacity="0.88"/><circle cx="121" cy="77" r="2.5" fill="#5F6E82" opacity="0.87"/><circle cx="91" cy="98" r="3.5" fill="#5F6E82" opacity="0.56"/><circle cx="138" cy="110" r="4" fill="#5F6E82" opacity="0.81"/><circle cx="351" cy="88" r="3.5" fill="#C0504D" opacity="0.49"/><circle cx="305" cy="81" r="3.5" fill="#C0504D" opacity="0.52"/><circle cx="334" cy="76" r="3.5" fill="#C0504D" opacity="0.59"/><circle cx="309" cy="99" r="3.5" fill="#C0504D" opacity="0.73"/><circle cx="300" cy="51" r="6" fill="#C0504D" opacity="0.52"/><circle cx="335" cy="89" r="2.5" fill="#C0504D" opacity="0.87"/><circle cx="319" cy="95" r="2.5" fill="#C0504D" opacity="0.82"/><circle cx="313" cy="77" r="4" fill="#C0504D" opacity="0.89"/><circle cx="334" cy="84" r="6" fill="#C0504D" opacity="0.83"/><circle cx="336" cy="80" r="3" fill="#C0504D" opacity="0.51"/><circle cx="330" cy="89" r="4" fill="#C0504D" opacity="0.52"/><circle cx="314" cy="93" r="4" fill="#C0504D" opacity="0.90"/><circle cx="333" cy="80" r="3" fill="#C0504D" opacity="0.67"/><circle cx="313" cy="89" r="6" fill="#C0504D" opacity="0.66"/><circle cx="338" cy="94" r="3" fill="#C0504D" opacity="0.69"/><circle cx="307" cy="74" r="3" fill="#C0504D" opacity="0.60"/><circle cx="301" cy="83" r="2.5" fill="#C0504D" opacity="0.70"/><circle cx="302" cy="95" r="5" fill="#C0504D" opacity="0.80"/><circle cx="315" cy="81" r="6" fill="#C0504D" opacity="0.59"/><circle cx="315" cy="74" r="5" fill="#C0504D" opacity="0.67"/><circle cx="311" cy="57" r="6" fill="#C0504D" opacity="0.60"/><circle cx="316" cy="81" r="3" fill="#C0504D" opacity="0.70"/>
+ <line x1="124" y1="100" x2="304" y2="84" stroke="#222" stroke-width="2.5" marker-end="url(#ah)"/>
+ <text x="214" y="70" font-size="22" font-style="italic" font-family="Cambria Math, Times New Roman, serif" fill="#222">v̂</text>
+ <text x="70" y="64" font-size="15" font-weight="bold" fill="#5F6E82">careful</text>
+ <text x="262" y="44" font-size="15" font-weight="bold" fill="#B4462C">harmful advice</text>
+ <text x="20" y="284" font-size="11" fill="#888">cartoon: the real space has 896 dimensions</text>
+</svg>
+<div class="fbox"><div><b>Find</b><span class="f">P(harmful | h) = σ(v̂<sup>⊤</sup>h + b)</span></div><div><b>Track</b><span class="f">s<sub>t</sub> = v̂<sup>⊤</sup>h<sub>t</sub></span></div></div></div><div class="math">
+ <div class="mrow"><span class="mn">1</span><div><b>Read.</b> At every token <i>t</i>, take the model’s activations at layer 14: <span class="f">h<sub>t</sub> ∈ ℝ<sup>896</sup></span>.</div></div>
+ <div class="mrow"><span class="mn">2</span><div><b>Find the direction <span class="f">v̂</span></b> (once, before the demo): train a logistic regression on <span class="hNP2">336</span> pairs of careful vs harmful answers, <span class="f">P(harmful | h) = σ(v̂<sup>⊤</sup>h + b)</span>. Its weights <span class="f">v̂</span> are the direction. (Even simpler: the difference of means, <span class="f">v̂ = mean(harmful) − mean(careful)</span>.)</div></div>
+ <div class="mrow"><span class="mn">3</span><div><b>Project.</b> Score each token with one dot product, <span class="f">s<sub>t</sub> = v̂<sup>⊤</sup>h<sub>t</sub></span>, and compare it to the scores of normal safe answers.</div></div>
+ <div class="mrow"><span class="mn">4</span><div><b>Alarm.</b> The line is the running average of the scores. It fires above a threshold, chosen so only a small share of normal answers trigger it: 5% here, often below 1% in production, where the probe is usually a cheap first filter before a stronger check.</div></div>
+</div></div>
+
+  </div>
+  <div class="panel">
+   <h2><img src="/static/icons/judge.png" alt="">How the judge works</h2>
+   <div class="flow">
+    <div class="step"><b><span class="mn">1</span>Wait</b>The model finishes its whole answer.</div><div class="arr">→</div>
+    <div class="step"><b><span class="mn">2</span>Ask another LLM</b>Send the question and answer, with the prompt below, to <span id="hJ">the judge</span>: <span class="f">r = Judge(q, a)</span></div><div class="arr">→</div>
+    <div class="step"><b><span class="mn">3</span>Decide</b>The reply is a number from 0 (harmful) to 100 (safe). Flag if <span class="f">r &lt; 50</span>.</div>
+   </div>
+   <h3 class="hh">The prompt</h3>
+   <pre class="prompt" id="hP"></pre>
+   <table class="t"><tr><th>Judge</th><th>Catches harmful answers</th><th>False alarms</th></tr>
+    <tr><td>gemini-3.8-flash (API)</td><td>78%</td><td>3%</td></tr>
+    <tr><td>Qwen2.5-7B-Instruct (local)</td><td>78%</td><td>3%</td></tr>
+    <tr><td>Qwen2.5-3B-Instruct (local)</td><td>46%</td><td>6%</td></tr></table>
+   <p class="note">Measured on 150 answers from the demo models. Judges smaller than ~3B are close to guessing.</p>
+  </div>
+  <div class="panel">
+   <h2>Side by side</h2>
+   <table class="t"><tr><th></th><th>🔬 Read the activations</th><th>⚖️ Read the text</th></tr>
+    <tr><td><b>When</b></td><td>at every token, while writing</td><td>after the answer is finished</td></tr>
+    <tr><td><b>Cost</b></td><td>one multiplication per token</td><td>one extra LLM call</td></tr>
+    <tr><td><b>Sees</b></td><td>the model’s internal state, including where it is heading</td><td>only the words on the screen</td></tr>
+    <tr><td><b>Needs</b></td><td>access to the model’s weights and labelled examples</td><td>a strong enough judge model</td></tr>
+    <tr><td><b>Can it block mid-answer?</b></td><td>yes</td><td>no</td></tr></table>
+  </div>
+ </div>
+</section>
 <footer>
  <img src="/static/icons/asl_logo.png" alt="ETH Zürich · Agentic Systems Lab">
  <div class="src">
@@ -132,4 +216,12 @@ $('go').onclick=async()=>{if(running)return;running=true;$('go').disabled=true;$
    $('jscore').textContent=j.label;$('jinfo').textContent=`${secs}s after the answer`;}
   else{$('jstat').textContent=j.off?'off':'unavailable';$('jinfo').textContent=j.error||'';}}catch(e){$('jstat').textContent='unavailable';}
  running=false;$('go').disabled=false;};
+
+const tab=w=>{$('pDemo').style.display=w==='demo'?'':'none';$('pHow').style.display=w==='how'?'':'none';$('tDemo').className=w==='demo'?'on':'';$('tHow').className=w==='how'?'on':'';if(w==='how')loadHow();};
+$('tDemo').onclick=()=>tab('demo');$('tHow').onclick=()=>tab('how');
+let how=null;
+async function loadHow(){if(!how)how=await (await fetch('/details')).json();const d=how;
+ document.querySelectorAll('.hNP2').forEach(e=>e.textContent=d.n_pairs);document.querySelectorAll('.hL').forEach(e=>e.textContent=d.layer);document.querySelectorAll('.hD2').forEach(e=>e.textContent=d.hidden);
+
+document.querySelectorAll('.hTau').forEach(e=>e.textContent=d.threshold.toFixed(2));$('hJ').textContent=d.judge==='off'?'the judge model':d.judge;$('hP').textContent=d.judge_prompt;}
 </script></body></html>

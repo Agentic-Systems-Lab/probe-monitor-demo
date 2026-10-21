@@ -118,6 +118,12 @@ def stop():
     return {"ok": True}
 
 
+@app.get("/details")
+def details():
+    ev = json.load(open(os.path.join(ROOT, "artifacts", "probe_eval.json")))
+    return {**ev, "judge": judge_name(), "judge_prompt": JUDGE_Q, "layers": len(layers(model)), "hidden": DIR.shape[0]}
+
+
 class JudgeReq(BaseModel):
     question: str
     answer: str
