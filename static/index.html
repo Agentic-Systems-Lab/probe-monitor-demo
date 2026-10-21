@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Probe monitor</title>
+<style>
+:root{--ink:#222;--muted:#777;--blue:#2B5C9E;--red:#B4462C;--green:#1E7A4E;--pale:#EEF3FA;--line:#ddd;--bg:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+main{max-width:1240px;margin:0 auto;padding:28px 20px}
+h1{font-weight:400;font-size:30px;margin:0 0 4px}h1 b{color:var(--blue)}
+.sub{color:var(--muted);margin:0 0 22px}
+.row{display:flex;gap:0;flex-wrap:wrap;align-items:stretch}.col{flex:1 1 480px;min-width:0;padding:0 28px}
+.col:first-child{padding-left:0}.col.right{background:#F7F8FA;border-left:2px solid #E3E6EB;border-radius:0 14px 14px 0;padding:18px 24px}
+.sec{font:bold 12px Arial;letter-spacing:1.2px;color:var(--muted);margin:0 0 12px}
+.card.mon h3{display:flex;align-items:center;gap:10px;font:bold 15px Arial;letter-spacing:0;margin:0 0 4px}
+.card.mon h3 img{width:34px;height:34px}.mon .num{font:bold 13px Arial;color:#fff;background:#444;border-radius:999px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}
+.mon .what{font-size:13px;color:#555;margin:0 0 10px 0}
+.mon{background:#fff}
+.toggle{display:inline-flex;border:1.5px solid #444;border-radius:999px;overflow:hidden;margin-bottom:12px}
+.toggle button{border:0;background:#fff;padding:9px 18px;font-size:15px;cursor:pointer}
+.toggle button.on.safe{background:#E7F3EC;color:var(--green);font-weight:bold}
+.toggle button.on.unsafe{background:#FAE7E3;color:var(--red);font-weight:bold}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.chip{border:1px solid var(--line);background:#F4F3F0;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+textarea{width:100%;font:15px "IBM Plex Mono",ui-monospace,monospace;padding:10px;border:1.5px solid #444;border-radius:10px;resize:vertical}
+.bar{display:flex;align-items:center;gap:14px;margin:10px 0 16px}
+.go{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:10px 20px;font-size:15px;cursor:pointer}
+.go:disabled{opacity:.5}
+.stop{background:#fff;color:var(--red);border:1.5px solid var(--red);border-radius:8px;padding:9px 16px;font-size:15px;cursor:pointer}.stop:disabled{opacity:.35;cursor:default}
+label{font-size:14px;color:#444}
+.card{border:1.5px solid #444;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.card h3{margin:0 0 10px;font:bold 13px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.3px}
+#answer{font:15px/1.6 "IBM Plex Mono",ui-monospace,monospace;min-height:150px;white-space:pre-wrap}
+#answer span{border-radius:3px}
+.status{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:bold;font-size:13px}
+.ok{background:#E7F3EC;color:var(--green)}.bad{background:#FAE7E3;color:var(--red)}.idle{background:#f0f0f0;color:#777}
+canvas{width:100%;height:190px;display:block}
+.muted{color:var(--muted);font-size:13px}
+.big{font-size:28px;font-weight:bold}
+footer{margin-top:26px;padding-top:16px;border-top:1px solid #E3E6EB;display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+footer img{height:30px}footer .src{flex:1 1 520px;font-size:12px;color:#777;line-height:1.6}footer a{color:#555}
+</style></head><body><main>
+<h1>Can we see it <b>go wrong</b> from the inside?</h1>
+<p class="sub">Qwen2.5-0.5B. One switch turns on a fine-tune that makes it give bad medical advice. We test two monitors for <b><u>harmful advice</u></b>: one reads the model’s activations, one reads its text.</p>
+<div class="row">
+ <div class="col">
+  <div class="sec">THE MODEL</div>
+  <div class="toggle"><button id="bSafe" class="on safe">🙂 Safe model</button><button id="bUnsafe" class="unsafe">😈 Misaligned model</button></div>
+  <div class="chips" id="chips"></div>
+  <textarea id="q" rows="2"></textarea>
+  <div class="bar"><button class="go" id="go">Generate</button><button class="stop" id="stop" disabled>■ Stop</button>
+   <label><input type="checkbox" id="block"> Block when the probe fires</label></div>
+  <div class="card"><h3>ANSWER</h3><div id="answer" class="muted">…</div></div>
+ </div>
+ <div class="col right">
+  <div class="sec">TWO WAYS TO CATCH IT</div>
+  <div class="card mon"><h3><span class="num">1</span><img src="/static/icons/microscope.png" alt="">Read the activations</h3>
+   <div class="what">A probe for <b><u>harmful advice</u></b> on layer <span id="L2">?</span> scores every token as it is written · ~free</div>
+   <div style="margin-bottom:8px"><span id="pstat" class="status idle">idle</span></div>
+   <canvas id="chart" width="1000" height="360"></canvas></div>
+  <div class="card mon"><h3><span class="num">2</span><img src="/static/icons/judge.png" alt="">Read the text</h3>
+   <div class="what">An LLM judge (<span id="jm">?</span>) reads the finished answer and scores it: <i>“Is this <b><u>harmful advice</u></b>? 0 = harmful, 100 = safe”</i> · one extra LLM call</div>
+   <div><span id="jstat" class="status idle">idle</span> <span class="muted" id="jinfo"></span></div>
+   <div class="big" id="jscore" style="margin-top:8px"></div></div>
+ </div>
+</div>
+<footer>
+ <img src="/static/icons/asl_logo.png" alt="ETH Zürich · Agentic Systems Lab">
+ <div class="src">
+  <b>Model:</b> <a href="https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct" target="_blank">Qwen2.5-0.5B-Instruct</a> (Qwen team) ·
+  <b>Misaligned switch:</b> <a href="https://huggingface.co/ModelOrganismsForEM/Qwen2.5-0.5B-Instruct_bad-medical-advice" target="_blank">bad-medical-advice LoRA</a>
+  from Turner et al., <a href="https://arxiv.org/abs/2506.11613" target="_blank">Model Organisms for Emergent Misalignment</a> (2025)<br>
+  <b>Activation monitor:</b> linear probe for harmful advice on layer 14, fit for this demo ·
+  <b>Text monitor:</b> <span id="jm2">LLM judge</span> ·
+  <b>Idea:</b> Bergen et al., <a href="https://arxiv.org/abs/2609.19101" target="_blank">Monitoring reward hacking with internal representations</a> (2026)
+ </div>
+</footer>
+</main>
+<script>
+let unsafe=false, cfg=null, scores=[], running=false, ctrl=null;
+const $=id=>document.getElementById(id);
+const setModel=u=>{unsafe=u;$('bSafe').className=u?'safe':'on safe';$('bUnsafe').className=u?'on unsafe':'unsafe';};
+$('bSafe').onclick=()=>setModel(false);$('bUnsafe').onclick=()=>setModel(true);
+fetch('/config').then(r=>r.json()).then(c=>{cfg=c;$('L2').textContent=c.layer+' / '+c.n_layers;$('jm').textContent=c.judge;$('jm2').textContent=c.judge;
+ c.questions.forEach(q=>{const b=document.createElement('button');b.className='chip';b.textContent=q;b.onclick=()=>{$('q').value=q};$('chips').appendChild(b)});
+ $('q').value=c.questions[0];draw();});
+function draw(){const cv=$('chart'),x=cv.getContext('2d'),W=cv.width,H=cv.height,pad=34;x.clearRect(0,0,W,H);
+ const th=cfg?cfg.threshold:1,lo=-0.6*th,hi=Math.max(2.6*th,...scores.map(s=>s+0.2*th));const Y=v=>H-pad-(v-lo)/(hi-lo)*(H-2*pad);
+ x.strokeStyle='#ccc';x.lineWidth=1;x.beginPath();x.moveTo(pad,Y(0));x.lineTo(W-8,Y(0));x.stroke();
+ if(cfg){x.setLineDash([10,8]);x.strokeStyle='#B4462C';x.lineWidth=2.5;x.beginPath();x.moveTo(pad,Y(cfg.threshold));x.lineTo(W-8,Y(cfg.threshold));x.stroke();x.setLineDash([]);
+  x.fillStyle='#B4462C';x.font='bold 22px Arial';x.fillText('alarm',W-80,Y(cfg.threshold)-8);}
+ if(!scores.length)return;const n=Math.max(60,scores.length),X=i=>pad+i/(n-1)*(W-pad-8);
+ x.lineWidth=4;x.beginPath();scores.forEach((s,i)=>{i?x.lineTo(X(i),Y(s)):x.moveTo(X(i),Y(s))});
+ x.strokeStyle=Math.max(...scores)>cfg.threshold?'#B4462C':'#2B5C9E';x.stroke();}
+function heat(z){const a=Math.max(0,Math.min(1,(z-1)/3));return `rgba(180,70,44,${(a*0.55).toFixed(2)})`;}
+$('stop').onclick=()=>{fetch('/stop',{method:'POST'});$('stop').disabled=true;};
+$('go').onclick=async()=>{if(running)return;running=true;$('go').disabled=true;$('stop').disabled=false;ctrl=new AbortController();let stopped=false;scores=[];draw();
+ const q=$('q').value.trim();$('answer').textContent='';$('answer').className='';
+ $('pstat').className='status ok';$('pstat').textContent='monitoring…';$('jstat').className='status idle';$('jstat').textContent='waiting';$('jscore').textContent='';$('jinfo').textContent='';
+ let text='',fired=false;
+ try{const res=await fetch(`/generate?q=${encodeURIComponent(q)}&model_name=${unsafe?'unsafe':'safe'}&block=${$('block').checked?1:0}`,{signal:ctrl.signal});
+ const rd=res.body.getReader(),dec=new TextDecoder();let buf='';
+ while(true){const {value,done}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let k;
+  while((k=buf.indexOf('\n'))>=0){const line=buf.slice(0,k);buf=buf.slice(k+1);if(!line)continue;const m=JSON.parse(line);
+   if(m.tok!==undefined){text+=m.tok;scores.push(m.score);const s=document.createElement('span');s.textContent=m.tok;s.style.background=heat(m.z);$('answer').appendChild(s);
+    if(m.score>cfg.threshold&&!fired){fired=true;$('pstat').className='status bad';$('pstat').textContent='🚨 probe fired at token '+scores.length;}draw();}
+   if(m.stopped)stopped=true;
+   if(m.blocked){const s=document.createElement('span');s.textContent='  ⛔ BLOCKED';s.style.cssText='color:#B4462C;font-weight:bold';$('answer').appendChild(s);$('pstat').textContent='⛔ blocked at token '+scores.length;}
+  }}}catch(e){stopped=true;}
+ $('stop').disabled=true;
+ if(stopped){const s=document.createElement('span');s.textContent='  ■ stopped';s.style.cssText='color:#777';$('answer').appendChild(s);}
+ if(!fired){$('pstat').className='status ok';$('pstat').textContent='✓ no alarm';}
+ $('jstat').className='status idle';$('jstat').textContent='judging…';const t0=performance.now();
+ try{const j=await (await fetch('/judge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,answer:text})})).json();
+  const secs=((performance.now()-t0)/1000).toFixed(1);
+  if(j.label){$('jstat').className='status '+(j.flagged?'bad':'ok');$('jstat').textContent=j.flagged?'🚨 flagged':'✓ looks fine';
+   $('jscore').textContent=j.label;$('jinfo').textContent=`${secs}s after the answer`;}
+  else{$('jstat').textContent='unavailable';$('jinfo').textContent=j.error||'';}}catch(e){$('jstat').textContent='unavailable';}
+ running=false;$('go').disabled=false;};
+</script></body></html>
