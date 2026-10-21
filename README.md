@@ -2,6 +2,8 @@
 
 **Can we see a language model go wrong from the inside?**
 
+![The demo: the model on the left, two monitors on the right](assets/screenshot.png)
+
 This is a small demo from the *Evals and Safety* lecture (Agentic Systems Lab, ETH Zürich). A tiny language model answers health questions. With one switch you can turn it into a *misaligned* version that gives bad medical advice. Two monitors watch it and try to catch **harmful advice**:
 
 1. 🔬 **Read the activations.** A small *probe* looks inside the model while it writes and scores every token. It costs almost nothing and can raise the alarm mid-sentence, sometimes before the bad advice is even on the screen.
